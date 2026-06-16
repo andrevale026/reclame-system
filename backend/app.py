@@ -1,3 +1,6 @@
+import os
+from flask import Flask, request, jsonify, send_from_directory
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
@@ -48,7 +51,8 @@ def gerar_protocolo(tipo):
 
 @app.route("/")
 def home():
-    return "API Reclame funcionando!"
+    caminho_frontend = os.path.join(os.path.dirname(__file__), "..", "frontend")
+    return send_from_directory(caminho_frontend, "index.html")
 
 # ==========================================
 # RECEBER DENÚNCIA
@@ -159,5 +163,29 @@ def receber_denuncia():
 # INICIAR SERVIDOR
 # ==========================================
 
+import subprocess
+import time
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+
+    try:
+        subprocess.Popen(
+            [
+                r"C:\ngrok\ngrok.exe",
+                "http",
+                "5000"
+            ]
+        )
+
+        print("Ngrok iniciado automaticamente.")
+        time.sleep(3)
+
+    except Exception as erro:
+        print("Erro ao iniciar Ngrok:", erro)
+
+    app.run(
+        host="0.0.0.0",
+        port=5000,
+        debug=True
+    )
